@@ -64,7 +64,7 @@ public class Missile : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D hitInfo)
     {
-        Debug.Log(hitInfo.name);
+        // Debug.Log(hitInfo.name);
         if(armed)
         {
             ShipMotor ship = hitInfo.GetComponent<ShipMotor>();

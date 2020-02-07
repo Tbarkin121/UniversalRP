@@ -1,10 +1,13 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(ShipMotor))]
 public class ShipController : MonoBehaviour
 {
+    Camera cam;
+    public Interactable focus;
+    public LayerMask movementMask;
     public Transform firePointLeft;
     public Transform firePointRight;
     public Transform machinegunLeft;
@@ -23,10 +26,18 @@ public class ShipController : MonoBehaviour
     void Start()
     {
         motor = GetComponent<ShipMotor>();
+        cam = Camera.main;
+        if(cam == null)
+        {
+            Debug.Log("No Camera Found"); 
+        }
     }
 
     void Update()
     {
+        // If you want to disable input while you are using menues... no thanks
+        // if (EventSystem.current.IsPointerOverGameObject())
+        //     return;
         //Calculate Total Engine Force (Break down into engines later)
         float _xMov = Input.GetAxisRaw("Horizontal");
         float _zMov = Input.GetAxisRaw("Vertical");
@@ -40,15 +51,48 @@ public class ShipController : MonoBehaviour
         motor.Rot(-turnForce*_xMov);
         // gameObject.GetComponent<Rigidbody2D>().AddTorque(1.0f*Time.deltaTime);
 
-
-        if(Input.GetButtonDown("Fire1"))
+        if(Input.GetMouseButtonDown(0))
         {
             ShootMissile();
+
+            Vector3 mousePos = GetWorldPositionOnPlane(Input.mousePosition, 0f);
+            Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
+            RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero);
+            // Debug.Log("MousePosition" + Input.mousePosition);
+            // Debug.Log("MousePositionWorldPoint" + mousePos);
+            if(hit.collider != null)
+            {
+                Debug.Log("We Hit" + hit.collider.name + " " + hit.point);
+                
+            }
+            RemoveFocus();
         }
-        if(Input.GetButtonDown("Fire2"))
+        if(Input.GetMouseButtonDown(1))
         {
             StartCoroutine(ShootMachineGun());
+            Vector3 mousePos = GetWorldPositionOnPlane(Input.mousePosition, 0f);
+            Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
+            RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero);
+            // Debug.Log("MousePosition" + Input.mousePosition);
+            // Debug.Log("MousePositionWorldPoint" + mousePos);
+            if(hit.collider != null)
+            {
+                Interactable interactable = hit.collider.GetComponent<Interactable>();
+                if(interactable != null)
+                {
+                    SetFocus(interactable);
+                }
+            }
         }
+
+        // if(Input.GetButtonDown("Fire1"))
+        // {
+        //     ShootMissile();
+        // }
+        // if(Input.GetButtonDown("Fire2"))
+        // {
+        //     StartCoroutine(ShootMachineGun());
+        // }
         void ShootMissile()
         {
             if(whichBay)
@@ -110,5 +154,33 @@ public class ShipController : MonoBehaviour
             lineRendererL.enabled = false;
             lineRendererR.enabled = false;
         }
+    }
+
+    void SetFocus (Interactable newFocus)
+    {
+        if (newFocus != focus) 
+        {
+            if (focus != null)
+                focus.OnDefocused();
+            focus = newFocus;
+            motor.FollowTarget(newFocus);
+        }
+        newFocus.OnFocused(transform);
+    }
+    void RemoveFocus ()
+    {
+        if (focus != null)
+            focus.OnDefocused();
+
+        focus = null;
+        motor.StopFollowingTarget();
+    }
+    public Vector3 GetWorldPositionOnPlane(Vector3 screenPosition, float z) 
+    {
+        Ray ray = Camera.main.ScreenPointToRay(screenPosition);
+        Plane xy = new Plane(Vector3.forward, new Vector3(0,0,z));
+        float distance;
+        xy.Raycast(ray, out distance);
+        return ray.GetPoint(distance);
     }
 }

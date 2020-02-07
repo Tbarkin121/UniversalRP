@@ -216,7 +216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7362705ffd683840940979d53a63bd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  speed: 20
   damage: 10
   rb: {fileID: 2998579713809227155}
   smokePrefab: {fileID: 6729903690579421182, guid: 5abcfc63f3920fe4bb5d7f6c52a75786,

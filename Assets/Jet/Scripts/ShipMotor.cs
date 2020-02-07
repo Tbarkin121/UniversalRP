@@ -24,6 +24,7 @@ public class ShipMotor : MonoBehaviour
     private Rigidbody2D rb;
     public int Health = 100;
     public float rotation_speed_mod = 0.25f;
+    Transform target;
 
 
     /////*******************************************/////
@@ -33,10 +34,6 @@ public class ShipMotor : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-    }
-    void Update()
-    {
-        
     }
     // Gets a movement vector
     public void Move(Vector2 _velocity)
@@ -86,7 +83,23 @@ public class ShipMotor : MonoBehaviour
         }
     }
 
+    public void FollowTarget (Interactable newTarget)
+    {
+        target = newTarget.interactionTransform;
+    }
+    public void StopFollowingTarget()
+    {
+        target = null;
+    }
 
+    void Update ()
+    {
+        if (target != null)
+        {
+            //Do PID controller to follow target... doesn't need to happen right now
+            //Also maybe do that in a coroutine
+        }
+    }
 
     public void TakeDamage(int damage) 
     {

@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 23fad84d2c9f56c4e9a9226feae30e02
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: SWMath
+  fontNames:
+  - SWMath
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: c9803448961f1d141808339c1b048962, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
